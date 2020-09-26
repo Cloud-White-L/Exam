@@ -1,0 +1,87 @@
+# -*- coding:utf-8 -*-
+
+import string,os
+#自己对照网上多篇文章的尝试QAQ
+# def encrypt(message,key=3):
+#     message = input('请输入密文')
+#     key=int(input('请输入位移值（默认为3）'))
+#     if not message.isalpha():
+#         return message
+#     else:
+#         a = "A" if message.isupper() else "a"
+#         return chr((ord(message)-ord('a')-key)%26+ord('a'))
+# def decrypt(message,key=3):
+#     message=input('请输入密文')
+#     key=int(input('请输入位移值（默认为3）'))
+#     if not message.isalpha():
+#         return message
+#     else:
+#         a = "A" if message.isupper() else "a"
+#         return chr((ord(message)-ord('a')-key)%26+ord('a'))
+
+
+#按照网上的指导并添加了对数字的偏移以及能够自己修改输入数据
+class CaesarCipher(object):
+
+#对字符的偏移：
+    def __crypt(self,char,key):
+        if not char.isalpha():
+            base = "1" if char.isupper() else "1"
+            return chr((ord(char)-ord(base)+key)%10+ord(base))
+        else:
+            base = "A" if char.isupper() else "a"
+            return chr((ord(char)-ord(base)+key)%26+ord(base))
+#字符的加密：
+    def encrypt(self,char,key):
+        return self.__crypt(char,key)
+#字符的解密：
+    def decrypt(self,char,key):
+        return self.__crypt(char,-key)
+#文本的拆解、组合：
+    def __crypt_text(self,func,text,key):
+        lines = []
+        for line in text.split("\n"):
+            words = []
+            for word in line.split(" "):
+                chars = []
+                for char in word:
+                    chars.append(func(char,key))
+                words.append("".join(chars))
+            lines.append(" ".join(words))
+        return "\n".join(lines)
+#文本的加密：
+    def encrypt_text(self,text,key):
+        return self.__crypt_text(self.encrypt,text,key)
+#文本的解密：
+    def decrypt_text(self,text,key):
+        return self.__crypt_text(self.decrypt,text,key)
+
+#这个不懂= =：
+if __name__ == '__main__':
+    cipher = CaesarCipher()
+
+
+#输入、结束系统为自己依据网上文章修改：
+while True:
+    print(u"1.加密")
+    print(u"2.解密")
+    print(u"3.结束")
+    choice = input("请选择：")
+    if choice == "1":
+        plain = input('请输入明文')
+        try:
+            key = int(input('请输入密钥'))
+        except:
+            key = 3
+        print(cipher.encrypt_text(plain,key))
+    elif choice == "2":
+        plain = input('请输入暗文')
+        try:
+            key = int(input('请输入密钥'))
+        except:
+            key = 3
+        print(cipher.decrypt_text(plain,key))
+    elif choice == "3":
+        break
+    else:
+        print(u"输入错误")
